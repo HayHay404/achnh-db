@@ -1,0 +1,22 @@
+{%extends 'base.html'%}
+
+{%block title%}
+Signup
+{%endblock%}
+
+{%block content%}
+<h2 class="text-4xl font-bold m-4">Sign up</h2>
+
+<div class="grid place-items-center m-4">
+    <form action="" class="form-control w-full max-w-s" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form if field.widget.input_type != "hidden" %}
+        <div class="label">
+            <span class="label-text text-3xl">{{field.label}}</span>
+        </div>
+        {{field(class_="input input-bordererd w-full max-w-xs input-secondary")}}
+        {%endfor%}
+        <button class="btn btn-primary max-w-sm">Create</button>
+    </form>
+</div>
+{%endblock%}
