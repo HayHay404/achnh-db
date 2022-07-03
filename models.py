@@ -20,7 +20,7 @@ class User(db.Model):
     bio = db.Column(db.String)
     friend_code = db.Column(db.String(12))
     dream_code = db.Column(db.String(12))
-    image_url = db.Column(db.String)
+    profile_image = db.Column(db.String, default = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
 
     @classmethod
     def signin(cls, username, password):
