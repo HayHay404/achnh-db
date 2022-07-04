@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, EmailField, SelectField
+from wtforms import StringField, PasswordField, EmailField, SelectField, FileField
 from wtforms.validators import InputRequired, Email, Length
 
 
@@ -20,4 +20,8 @@ class AccountForm(FlaskForm):
     friend_code = StringField("Friend Code", validators=[Length(max=12)])
     dream_code = StringField("Dream Code", validators=[Length(max=12)])
     confirm_password = PasswordField("Confirm Password", validators=[InputRequired()])
+
+class ImageUploadForm(FlaskForm):
+    image_file = FileField("Upload a file")
+    
     

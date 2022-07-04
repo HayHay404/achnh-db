@@ -1,10 +1,13 @@
-from flask import Flask, redirect, render_template, session, flash, g, url_for
+from flask import Flask, redirect, render_template, session, flash, g, url_for, request
+from requests import request
 from models import connect_db, db, User, Villager, Image, Island
 from flask_mail import Mail, Message
-from forms import AccountForm, SigninForm, SignupForm
+from forms import AccountForm, ImageUploadForm, SigninForm, SignupForm
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from  sqlalchemy.sql.expression import func, select
+from  sqlalchemy.sql.expression import func
+from config import config
+from imagekitio import ImageKit
 
 #
 #
@@ -15,12 +18,12 @@ from  sqlalchemy.sql.expression import func, select
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///acnhdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = "dc981765fda04b10a3f1508208c5b8a1"
+app.config["SECRET_KEY"] = config["secret_key"]
 
 app.config['MAIL_SERVER']='hayhay.link'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'acnhdb@hayhay.link'
-app.config['MAIL_PASSWORD'] = 'dfd_UHM7gdr1uwy8fjr'
+app.config['MAIL_PASSWORD'] = config["email_password"]
 app.config['MAIL_DEFAULT_SENDER'] = "acnhdb@hayhay.link"
 app.config['MAIL_MAX_EMAILS'] = 5
 app.config['MAIL_SURPRESS_SEND'] = False
@@ -35,6 +38,12 @@ admin.add_views(ModelView(User, db.session),
         ModelView(Villager, db.session), 
         ModelView(Image, db.session), 
         ModelView(Island, db.session))
+
+imagekit = ImageKit(
+    private_key = config["imagekit_private_key"],
+    public_key = "public_4RCmJkQjOejZ8hip2KLzUCthMsI=",
+    url_endpoint = 'https://ik.imagekit.io/u2glwyhen',
+)
 
 connect_db(app)
 
@@ -137,7 +146,7 @@ def account():
         db.session.commit()
     return render_template("/user/account.html", user = user, form = form)
 
-@app.route("/<username>", methods=["GET", "POST"])
+@app.route("/<username>")
 def user_profile(username):
     if g.user != None and username == g.user.username:
         user = g.user
@@ -146,3 +155,31 @@ def user_profile(username):
     
     return render_template("user/profile.html", user = user)
 
+@app.route("/<username>/edit", methods=["GET", "POST"])
+def edit_user_profile(username):
+    if g.user != None and username == g.user.username:
+        user = g.user
+    else:
+        return (redirect("/"), 401)
+
+    form = ImageUploadForm()
+
+    if form.validate_on_submit():
+        print(form.image_file.data)
+        image = imagekit.upload_file(
+            file = form.image_file.data, 
+            file_name = "Island_Image",
+            options= {
+                "folder" : "/island-images/",
+                "tags": [f"{g.user.username}"],
+                "is_private_file": False,
+                "use_unique_file_name": True,
+                "response_fields": ["tags"],
+            }
+        )
+
+        print(image)
+        flash("Success", "success")
+        
+    
+    return render_template("user/edit_profile.html", user = user, form = form)
