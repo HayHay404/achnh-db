@@ -1,31 +1,33 @@
 {% extends 'base.html'%}
 
 {%block content%}
-<div class="hero min-h-screen" style="background-image: url('static/wave.svg');">
+<div class="hero min-h-[90vh]" style="background-image: url('static/wave.svg');">
     <div class="hero-content text-center">
         <div class="max-w-md">
-            <h1 class="text-5xl font-bold">Welcome to</h1>
-            <h1 class="text-5xl font-bold">acnhDB</h1>
-            <p class="py-6">A new horizon of data for Animal Crossing players.</p>
+            <h1 class="text-7xl font-bold text-primary">Welcome to</h1>
+            <h1 class="text-7xl font-bold primary-content">acnhDB</h1>
+            <p class="py-6 font-bold text-secondary">A new horizon of data for Animal Crossing players.</p>
         </div>
     </div>
 </div>
 
 <h2 class="text-4xl font-bold m-4">Check out these islands!</h2>
 
+{% for user in users %}
 <div class="grid place-items-center m-4">
     <div class="card lg:card-side shadow-x1 bg-base-200 w-2/3">
         <figure>
             <img src="https://www.gaithersburgdental.com/wp-content/uploads/2016/10/orionthemes-placeholder-image.png" width="405">
         </figure>
         <div class="card-body">
-            <h2 class="card-title">user1.username</h2>
-            <p>user1.bio</p>
+            <h2 class="card-title text-3xl">{{user.username}}</h2>
+            <p>{% if user.bio != None %} {{user.bio}} {% else %} {% endif %}</p>
             <div class="card-actions justify-end">
-                <button class="btn btn-primary">Visit</button>
+                <a href="{{url_for('user_profile', username = user.username)}}"><button class="btn btn-primary">Visit</button></a>
             </div>
         </div>
     </div>
 </div>
+{% endfor %}
   
 {%endblock%}

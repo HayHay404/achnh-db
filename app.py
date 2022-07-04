@@ -1,11 +1,41 @@
 from flask import Flask, redirect, render_template, session, flash, g, url_for
-from models import connect_db, db, User
+from models import connect_db, db, User, Villager, Image, Island
+from flask_mail import Mail, Message
 from forms import AccountForm, SigninForm, SignupForm
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from  sqlalchemy.sql.expression import func, select
+
+#
+#
+# Config
+#
+#
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///acnhdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = "dc981765fda04b10a3f1508208c5b8a1"
+
+app.config['MAIL_SERVER']='hayhay.link'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'acnhdb@hayhay.link'
+app.config['MAIL_PASSWORD'] = 'dfd_UHM7gdr1uwy8fjr'
+app.config['MAIL_DEFAULT_SENDER'] = "acnhdb@hayhay.link"
+app.config['MAIL_MAX_EMAILS'] = 5
+app.config['MAIL_SURPRESS_SEND'] = False
+app.config['MAIL_DEBUG'] = True
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+mail = Mail(app)
+
+admin = Admin(app)
+admin.add_views(ModelView(User, db.session), 
+        ModelView(Villager, db.session), 
+        ModelView(Image, db.session), 
+        ModelView(Island, db.session))
+
 connect_db(app)
 
 @app.before_request
@@ -17,7 +47,12 @@ def load_user():
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    rand_users = User.query.order_by(func.random()).limit(4).all()
+    return render_template("home.html", users = rand_users)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return (render_template('404.html'), 404)
 
 
 #
@@ -36,10 +71,15 @@ def signup():
                 if User.query.filter_by(username = form.username.data).first() == None:
                     new_user = User.signup(password=form.password.data, username=form.username.data, email = form.email.data)
 
+                    msg = Message('Welcome to acnhDB!', recipients = [f'{new_user.email}'])
+                    msg.body = "Test email."
+                    mail.send(msg)
+
                     db.session.add(new_user)
                     db.session.commit()
                     session["user_id"] = form.username.data
                     flash("Successfully signed up!", "success")
+
                     return redirect("/")
                 else:
                     flash("Username already taken.", "error")
@@ -96,4 +136,13 @@ def account():
         db.session.add(user)
         db.session.commit()
     return render_template("/user/account.html", user = user, form = form)
+
+@app.route("/<username>", methods=["GET", "POST"])
+def user_profile(username):
+    if g.user != None and username == g.user.username:
+        user = g.user
+    else:
+        user = User.query.filter_by(username = username).first_or_404()
+    
+    return render_template("user/profile.html", user = user)
 

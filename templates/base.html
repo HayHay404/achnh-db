@@ -17,8 +17,8 @@
             <a href="/" class="btn btn-ghost text-xl">acnhDB</a>
         </div>
         <div class="flex-none gap-2">
-            <form class="form-control">
-                <input type="text" class="input input-bordered" placeholder="Search..." id="search-bar">
+            <form class="form-control" id="search-form">
+                <input type="text" class="input input-bordered" placeholder="Search..." id="search-bar" name="query">
             </form>
             {%if 'user_id' in session%}
             <div class="dropdown dropdown-end">
