@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, EmailField, SelectField, FileField
+from wtforms import StringField, PasswordField, EmailField, SelectField, MultipleFileField
 from wtforms.validators import InputRequired, Email, Length
 
 
@@ -22,6 +22,6 @@ class AccountForm(FlaskForm):
     confirm_password = PasswordField("Confirm Password", validators=[InputRequired()])
 
 class ImageUploadForm(FlaskForm):
-    image_file = FileField("Upload a file")
+    image_file = MultipleFileField("Upload Banner Images", validators=[Length(max=5)])
     
     

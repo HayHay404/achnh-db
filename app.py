@@ -8,6 +8,7 @@ from flask_admin.contrib.sqla import ModelView
 from  sqlalchemy.sql.expression import func
 from config import config
 from imagekitio import ImageKit
+import json
 
 #
 #
@@ -75,28 +76,33 @@ def signup():
     form = SignupForm()
 
     if form.validate_on_submit():
-        if (form.password.data == form.password_confirm.data):
-            if User.query.filter_by(email = form.email.data).first() == None:
-                if User.query.filter_by(username = form.username.data).first() == None:
-                    new_user = User.signup(password=form.password.data, username=form.username.data, email = form.email.data)
-
-                    msg = Message('Welcome to acnhDB!', recipients = [f'{new_user.email}'])
-                    msg.body = "Test email."
-                    mail.send(msg)
-
-                    db.session.add(new_user)
-                    db.session.commit()
-                    session["user_id"] = form.username.data
-                    flash("Successfully signed up!", "success")
-
-                    return redirect("/")
-                else:
-                    flash("Username already taken.", "error")
-            else:
-                flash("Email already in use.", "error")
-        else:
+        success = True
+        if (form.password.data != form.password_confirm.data):
             flash("Passwords do not match.", "error")
-        return redirect("/signup")
+            success=False
+        if User.query.filter_by(email = form.email.data).first() is not None:
+            flash("Email already in use.", "error")
+            success=False
+
+        if User.query.filter_by(username = form.username.data).first() is not None:
+            flash("Username already taken.", "error")
+            success=False
+
+        if not success:
+             return render_template("auth/signup.html", form = form)
+
+        new_user = User.signup(password=form.password.data, username=form.username.data, email = form.email.data)
+
+        msg = Message('Welcome to acnhDB!', recipients = [f'{new_user.email}'])
+        msg.body = "Test email."
+        mail.send(msg)
+
+        db.session.add(new_user)
+        db.session.commit()
+        session["user_id"] = form.username.data
+        flash("Successfully signed up!", "success")
+
+        return redirect("/")
         
     return render_template("auth/signup.html", form = form)
 
@@ -115,7 +121,7 @@ def signin():
 
     return render_template("auth/signin.html", form = form)
 
-@app.route("/logout")
+@app.route("/logout/")
 def logout():
     if session.get("user_id"):
         session.pop("user_id")
@@ -146,40 +152,50 @@ def account():
         db.session.commit()
     return render_template("/user/account.html", user = user, form = form)
 
-@app.route("/<username>")
+@app.route("/u/<username>/")
 def user_profile(username):
     if g.user != None and username == g.user.username:
         user = g.user
     else:
         user = User.query.filter_by(username = username).first_or_404()
-    
-    return render_template("user/profile.html", user = user)
 
-@app.route("/<username>/edit", methods=["GET", "POST"])
+    images = Image.query.filter_by(user_id = user.id).all()
+    
+    for image in images:
+        print(image.image_url)
+    
+    return render_template("user/profile.html", user = user, images = images)
+
+@app.route("/u/<username>/edit/", methods=["GET", "POST"])
 def edit_user_profile(username):
     if g.user != None and username == g.user.username:
         user = g.user
     else:
         return (redirect("/"), 401)
 
-    form = ImageUploadForm()
+    image_form = ImageUploadForm()
 
-    if form.validate_on_submit():
-        print(form.image_file.data)
-        image = imagekit.upload_file(
-            file = form.image_file.data, 
-            file_name = "Island_Image",
-            options= {
-                "folder" : "/island-images/",
-                "tags": [f"{g.user.username}"],
-                "is_private_file": False,
-                "use_unique_file_name": True,
-                "response_fields": ["tags"],
-            }
-        )
+    if image_form.validate_on_submit():
+        for file in image_form.image_file.data:
+            image = imagekit.upload_file(
+                file = file, 
+                file_name = "Island_Image",
+                options= {
+                    "folder" : "/island-images/",
+                    "tags": [f"{g.user.username}"],
+                    "is_private_file": False,
+                    "use_unique_file_name": True,
+                    "response_fields": ["tags"],
+                }
+            )
 
-        print(image)
-        flash("Success", "success")
+            if (Image.query.filter_by(user_id = user.id).count() < 5):
+                img = Image(image_url = image["response"]["url"], user_id = user.id)
+                db.session.add(img)
+            
+        db.session.commit()
+            
+        flash("Uploaded!", "success")
         
     
-    return render_template("user/edit_profile.html", user = user, form = form)
+    return render_template("user/edit_profile.html", user = user, image_form = image_form)

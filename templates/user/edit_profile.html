@@ -4,14 +4,16 @@
 {%block content%}
 <div class="grid place-items-center m-4">
     <form action="" class="form-control w-full max-w-s" method="post" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        {% for field in form if field.widget.input_type != "hidden" %}
-        <div class="label">
-            <span class="label-text text-3xl" name="image">{{field.label}}</span>
-        </div>
-        {{field(class_="input input-bordererd w-full max-w-xs input-secondary")}}
+        {{ image_form.hidden_tag() }}
+            {% for field in image_form if field.widget.input_type != "hidden" %}
+            {{field.label(class_="text-5xl my-2")}}
+            {{field(class_="block rounded w-full max-w-xs my-2", id="upload-btn")}}
         {%endfor%}
-        <button class="btn btn-primary max-w-sm">Sign in</button>
+        <button class="btn btn-primary max-w-sm my-2">Upload banner images</button>
     </form>
 </div>
+<div class="carousel carousel-center m-4 space-x-4 rounded-box" id="carousel">
+</div>
+
+<script src="/static/carousel_preview.js"></script>
 {%endblock%}

@@ -5,18 +5,22 @@ Sign in
 {%endblock%}
 
 {%block content%}
-<h2 class="text-4xl font-bold m-4">Sign in</h2>
 
-<div class="grid place-items-center m-4">
-    <form action="" class="form-control w-full max-w-s" method="post">
-        {{ form.hidden_tag() }}
-        {% for field in form if field.widget.input_type != "hidden" %}
-        <div class="label">
-            <span class="label-text text-3xl">{{field.label}}</span>
-        </div>
-        {{field(class_="input input-bordererd w-full max-w-xs input-secondary")}}
-        {%endfor%}
-        <button class="btn btn-primary max-w-sm">Sign in</button>
-    </form>
+<div class="grid place-items-center m-4 min-h-[75vh]">
+    <div class="">
+        <h2 class="text-5xl font-bold m-4 text-center">Sign in</h2>
+
+        <form action="" class="form-control" method="post">
+            {{ form.hidden_tag() }}
+            {% for field in form if field.widget.input_type != "hidden" %}
+            <div class="label">
+                <span class="label-text text-3xl">{{field.label}}</span>
+            </div>
+            {{field(class_="input input-bordererd min-w-full input-secondary")}}
+            {%endfor%}
+            <div class="m-2"></div>
+            <button class="btn btn-primary max-w-sm">Sign in</button>
+        </form>
+    </div>
 </div>
 {%endblock%}

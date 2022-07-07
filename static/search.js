@@ -6,6 +6,6 @@ searchBar === null || searchBar === void 0 ? void 0 : searchBar.addEventListener
         event.preventDefault();
         var searchFormData = new FormData(document.getElementById("search-form"));
         var accountQuery = searchFormData.get("query");
-        window.location.replace("".concat(accountQuery));
+        window.location.replace("/u/".concat(accountQuery, "/"));
     }
 });
