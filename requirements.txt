@@ -21,6 +21,7 @@ Flask-Mail==0.9.1
 Flask-Principal==0.4.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.1
+gunicorn==20.1.0
 idna==3.3
 imagekitio==2.2.8
 importlib-metadata==4.12.0
