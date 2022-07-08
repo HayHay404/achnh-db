@@ -9,6 +9,10 @@ from flask_admin.contrib.sqla import ModelView
 from  sqlalchemy.sql.expression import func
 from config import config
 from imagekitio import ImageKit
+import os
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
 
 #
 #
@@ -19,12 +23,13 @@ from imagekitio import ImageKit
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///acnhdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SECRET_KEY"] = config["secret_key"]
+app.config["SECRET_KEY"] = os.getenv("secret_key")
 
 app.config['MAIL_SERVER']='hayhay.link'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'acnhdb@hayhay.link'
-app.config['MAIL_PASSWORD'] = config["email_password"]
+#app.config['MAIL_PASSWORD'] = config["email_password"]
+app.config["MAIL_PASSWORD"] = os.getenv("email_password")
 app.config['MAIL_DEFAULT_SENDER'] = "acnhdb@hayhay.link"
 app.config['MAIL_MAX_EMAILS'] = 5
 app.config['MAIL_SURPRESS_SEND'] = False
@@ -41,7 +46,8 @@ admin.add_views(ModelView(User, db.session),
         ModelView(Island, db.session))
 
 imagekit = ImageKit(
-    private_key = config["imagekit_private_key"],
+    #private_key = config["imagekit_private_key"],
+    private_key = os.getenv("imagekit_private_key"),
     public_key = "public_4RCmJkQjOejZ8hip2KLzUCthMsI=",
     url_endpoint = 'https://ik.imagekit.io/u2glwyhen',
 )
