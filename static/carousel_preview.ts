@@ -5,10 +5,16 @@ document?.addEventListener("change", (event : Event) => fillCarousel(event))
 function fillCarousel(event : Event) {
     const files = uploadBtn?.files
 
-    console.log(files)
-
-    if (carousel.hasChildNodes) {
+    /* if (carousel.hasChildNodes) {
         removeAllChildNodes(carousel)
+    } */
+
+    if (uploadBtn.files.length > (5 - carousel.children.length)) {
+        const textNode = document.createElement("p")
+        textNode.innerHTML = "Too many images. Delete some or try uploading less."
+        carousel.appendChild(textNode)
+        // uploadBtn.files.remo
+        return;
     }
     
     for (const file of files) {

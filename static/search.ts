@@ -6,8 +6,8 @@ searchBar?.addEventListener("keydown", (event : any) => {
         let searchFormData = new FormData(document.getElementById("search-form") as HTMLFormElement)
         const accountQuery = searchFormData.get("query")
 
+        console.log(accountQuery)
+
         window.location.replace(`/u/${accountQuery}/`)
     }
 })
-
-export {};

@@ -2,18 +2,42 @@
 {%block title%}Editing {{user.username}}{%endblock%}
 
 {%block content%}
+<h1 class="text-5xl m-4">Edit banner images</h1>
+<div class="carousel carousel-center m-4 space-x-4 rounded-box" id="carousel">
+    {%for image in user.images%}
+    <div class="carousel-item max-w-lg">
+        <img src="{{image.image_url}}">
+    </div>
+    {%endfor%}
+</div>
 <div class="grid place-items-center m-4">
-    <form action="" class="form-control w-full max-w-s" method="post" enctype="multipart/form-data">
+    <form action="" class="form-control max-w-s" method="post" enctype="multipart/form-data">
         {{ image_form.hidden_tag() }}
             {% for field in image_form if field.widget.input_type != "hidden" %}
-            {{field.label(class_="text-5xl my-2")}}
+            <!-- {{field.label(class_="text-5xl my-2")}} -->
             {{field(class_="block rounded w-full max-w-xs my-2", id="upload-btn")}}
         {%endfor%}
         <button class="btn btn-primary max-w-sm my-2">Upload banner images</button>
     </form>
-</div>
-<div class="carousel carousel-center m-4 space-x-4 rounded-box" id="carousel">
+
+    <div class="avatar ring ring-primary rounded-full m-2">
+        <div class="w-32 rounded-full">
+            <img id="profile_image_preview" src="{{user.profile_image}}" alt="{{user.username}}" >
+        </div>
+    </div>
+
+    <form action="" method="post" class="min-w-lg form-control">
+        {{ user_profile_form.hidden_tag() }}
+        {% for field in user_profile_form if field.widget.input_type != "hidden" %}
+        <div class="label">
+            <span class="label-text text-3xl">{{field.label}}</span>
+        </div>
+        {{field(class_="input input-bordererd w-full max-w-xs input-secondary")}}
+        {%endfor%}
+        <button class="btn btn-primary max-w-s my-2">Update</button>
+    </form>
 </div>
 
 <script src="/static/carousel_preview.js"></script>
+<script src="/static/profile_preview.js"></script>
 {%endblock%}

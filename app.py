@@ -1,14 +1,14 @@
 from flask import Flask, redirect, render_template, session, flash, g, url_for, request
 from requests import request
+import requests
 from models import connect_db, db, User, Villager, Image, Island
 from flask_mail import Mail, Message
-from forms import AccountForm, ImageUploadForm, SigninForm, SignupForm
+from forms import ImageUploadForm, SigninForm, SignupForm, UserProfileForm
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from  sqlalchemy.sql.expression import func
 from config import config
 from imagekitio import ImageKit
-import json
 
 #
 #
@@ -144,7 +144,7 @@ def account():
         return redirect("/")
     
     user = g.user
-    form = AccountForm(obj = user)
+    form = UserProfileForm(obj = user)
 
     if form.validate_on_submit():
         form.populate_obj(user)
@@ -159,12 +159,9 @@ def user_profile(username):
     else:
         user = User.query.filter_by(username = username).first_or_404()
 
-    images = Image.query.filter_by(user_id = user.id).all()
+    # images = Image.query.filter_by(user_id = user.id).all()
     
-    for image in images:
-        print(image.image_url)
-    
-    return render_template("user/profile.html", user = user, images = images)
+    return render_template("user/profile.html", user = user)
 
 @app.route("/u/<username>/edit/", methods=["GET", "POST"])
 def edit_user_profile(username):
@@ -174,6 +171,15 @@ def edit_user_profile(username):
         return (redirect("/"), 401)
 
     image_form = ImageUploadForm()
+    if (user.profile_image[-1] != "g"):
+        user_profile_form = UserProfileForm(obj = user, user_image = user.profile_image[-1])
+    else:
+        user_profile_form = UserProfileForm(obj = user)
+        
+    villager_list = Villager.query.all()
+    user_profile_form.user_image.choices = [("", "")] + [(villager.id, villager.name) for villager in villager_list]
+
+    user_profile_form
 
     if image_form.validate_on_submit():
         for file in image_form.image_file.data:
@@ -192,10 +198,25 @@ def edit_user_profile(username):
             if (Image.query.filter_by(user_id = user.id).count() < 5):
                 img = Image(image_url = image["response"]["url"], user_id = user.id)
                 db.session.add(img)
-            
+                flash("Uploaded!", "success")
+            else:
+                flash("Could not upload images. Try again later or delete some images first.", "error")
         db.session.commit()
-            
-        flash("Uploaded!", "success")
-        
+
+    if user_profile_form.validate_on_submit():
+        bio = user_profile_form.bio.data
+        dc = user_profile_form.dream_code.data
+        fc = user_profile_form.friend_code.data
+        image_id = user_profile_form.user_image.data
+
+        user.bio = bio
+        user.dream_code = dc
+        user.friend_code = fc
+        if image_id != "":
+            user.profile_image = requests.get(f"http://acnhapi.com/v1/villagers/{image_id}").json()["icon_uri"]
+        else:
+            user.profile_image = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
+        db.session.commit()
     
-    return render_template("user/edit_profile.html", user = user, image_form = image_form)
+    return render_template("user/edit_profile.html", user = user, image_form = image_form, user_profile_form = user_profile_form)

@@ -17,6 +17,11 @@ Sign in
                 <span class="label-text text-3xl">{{field.label}}</span>
             </div>
             {{field(class_="input input-bordererd min-w-full input-secondary")}}
+            <!-- <label>
+                {% for error in field.errors %}
+                <span class="label-text-alt text-error">{{ error }}</span>
+                {% endfor %}
+            </label> -->
             {%endfor%}
             <div class="m-2"></div>
             <button class="btn btn-primary max-w-sm">Sign in</button>

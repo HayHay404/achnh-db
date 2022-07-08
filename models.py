@@ -1,6 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from sqlalchemy import false
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -14,10 +13,10 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    username = db.Column(db.String(50), nullable = false, unique = True)
-    email = db.Column(db.String, nullable = false, unique = True)
+    username = db.Column(db.String(50), nullable = False, unique = True)
+    email = db.Column(db.String, nullable = False, unique = True)
     password = db.Column(db.String, nullable = False)
-    bio = db.Column(db.String)
+    bio = db.Column(db.String(280))
     friend_code = db.Column(db.String(12))
     dream_code = db.Column(db.String(12))
     profile_image = db.Column(db.String, default = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png")
@@ -40,6 +39,8 @@ class User(db.Model):
         hashed_utf8 = hashed.decode("utf8")
 
         return cls(username = username, password = hashed_utf8, email = email)
+    
+    images = db.relationship("Image", backref = "users")
 
 class Villager(db.Model):
     """Class to store villagers each island has."""
@@ -66,5 +67,3 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     image_url = db.Column(db.String, nullable = False)
-
-    users = db.relationship("User", backref = "images")
