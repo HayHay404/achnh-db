@@ -2,5 +2,5 @@ const filterVillager : HTMLInputElement = document.getElementById("villager-filt
 filterVillager.addEventListener("input", (event : Event) => filterSearch(event))
 
 function filterSearch(event : Event) {
-    console.log(filterVillager.value)
+    
 }
