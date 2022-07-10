@@ -1,1 +1,1 @@
-web: command
+web: gunicorn main:app
