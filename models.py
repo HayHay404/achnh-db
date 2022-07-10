@@ -40,7 +40,8 @@ class User(db.Model):
 
         return cls(username = username, password = hashed_utf8, email = email)
     
-    images = db.relationship("Image", backref = "users")
+    images = db.relationship("Image", backref = "users", cascade = "all, delete-orphan")
+    user_villagers = db.relationship("UserVillager", backref = "users", cascade = "all, delete-orphan")
 
 class Villager(db.Model):
     """Class to store villagers each island has."""
@@ -50,16 +51,15 @@ class Villager(db.Model):
     name = db.Column(db.String, nullable = False, unique = True)
     image_url = db.Column(db.String, nullable = False)
 
-class Island(db.Model):
+class UserVillager(db.Model):
     """Class to store villagers each island has."""
-    __tablename__ = "islands"
+    __tablename__ = "users_villagers"
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     villager_id = db.Column(db.Integer, db.ForeignKey("villagers.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
-    users = db.relationship("User", backref = "islands")
-    villagers = db.relationship("Villager", backref = "islands")
+    villagers = db.relationship("Villager", backref = "users_villagers")
 
 class Image(db.Model):
     """Class to store user images for their profile"""

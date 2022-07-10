@@ -1,7 +1,7 @@
 from flask import Flask, redirect, render_template, session, flash, g, url_for, request
 from requests import request
 import requests
-from models import connect_db, db, User, Villager, Image, Island
+from models import connect_db, db, User, Villager, Image, UserVillager
 from flask_mail import Mail, Message
 from forms import ImageUploadForm, SigninForm, SignupForm, UserProfileForm
 from flask_admin import Admin
@@ -21,6 +21,7 @@ load_dotenv(find_dotenv())
 #
 
 app = Flask(__name__)
+#app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("database_url", default="postgresql:///acnhdb")
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///acnhdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("secret_key")
@@ -43,7 +44,7 @@ admin = Admin(app)
 admin.add_views(ModelView(User, db.session), 
         ModelView(Villager, db.session), 
         ModelView(Image, db.session), 
-        ModelView(Island, db.session))
+        ModelView(UserVillager, db.session))
 
 imagekit = ImageKit(
     #private_key = config["imagekit_private_key"],
@@ -165,8 +166,6 @@ def user_profile(username):
     else:
         user = User.query.filter_by(username = username).first_or_404()
 
-    # images = Image.query.filter_by(user_id = user.id).all()
-    
     return render_template("user/profile.html", user = user)
 
 @app.route("/u/<username>/edit/", methods=["GET", "POST"])
@@ -184,8 +183,6 @@ def edit_user_profile(username):
         
     villager_list = Villager.query.all()
     user_profile_form.user_image.choices = [("", "")] + [(villager.id, villager.name) for villager in villager_list]
-
-    user_profile_form
 
     if image_form.validate_on_submit():
         for file in image_form.image_file.data:
@@ -225,4 +222,4 @@ def edit_user_profile(username):
 
         db.session.commit()
     
-    return render_template("user/edit_profile.html", user = user, image_form = image_form, user_profile_form = user_profile_form)
+    return render_template("user/edit_profile.html", user = user, image_form = image_form, user_profile_form = user_profile_form, villager_list = villager_list)

@@ -18,21 +18,34 @@
     <h1 class="text-7xl my-2">{{user.username}}</h1>
     <p class="max-w-lg text-center">{% if user.bio != None%} {{user.bio}} {%endif%}</p>
 
-    <div class="stats stats-vertical lg:stats-horizontal shadow">
+    <div class="stats lg:stats-vertical shadow m-2 bg-primary text-primary-content">
         <div class="stat">
             <div class="stat-title">Friend Code</div>
-            <div class="stat-value text-primary">FC-{{user.friend_code}}</div>
+            <div class="stat-value">FC-{{user.friend_code}}</div>
         </div>
         <div class="stat">
             <div class="stat-title">Dream Code</div>
-            <div class="stat-value text-primary">DA-{{user.dream_code}}</div>
+            <div class="stat-value">DA-{{user.dream_code}}</div>
         </div>
     </div>
-
-    {% if session['user_id'] == user.username %}
-    <div class="card-actions justify-end m-4">
-        <a href="{{url_for('edit_user_profile', username = user.username)}}"><button class="btn btn-primary">Edit</button></a>
-    {%endif%}
-    </div>
 </div>
+<h1 class="justify-start text-4xl m-4">Check out {{user.username}}'s villagers!</h1>
+<div class="flex flex-wrap justify-center">
+    {% for user_villager in user.user_villagers %}
+    {% set villager = user_villager.villagers %}
+    <span class="card bg-base-200 m-2">
+        <figure><img src="{{villager.image_url}}" alt=""></figure>
+        <span class="card-body">
+            <div class="card-title">{{villager.name}}</div>
+        </span>
+    </span>
+    {% endfor %}
+</div>
+
+{% if session['user_id'] == user.username %}
+<div class="card-actions justify-end m-4">
+    <a href="{{url_for('edit_user_profile', username = user.username)}}"><button class="btn btn-primary">Edit</button></a>
+{%endif%}
+</div>
+
 {%endblock%}
