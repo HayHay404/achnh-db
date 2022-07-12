@@ -65,6 +65,7 @@ def load_user():
 @app.route("/")
 def home():
     rand_users = User.query.order_by(func.random()).limit(4).all()
+
     return render_template("home.html", users = rand_users)
 
 @app.errorhandler(404)
@@ -101,7 +102,7 @@ def signup():
         new_user = User.signup(password=form.password.data, username=form.username.data, email = form.email.data)
 
         msg = Message('Welcome to acnhDB!', recipients = [f'{new_user.email}'])
-        msg.body = "Test email."
+        msg.html = render_template("/email/signup_email.html/")
         mail.send(msg)
 
         db.session.add(new_user)

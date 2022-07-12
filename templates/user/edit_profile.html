@@ -10,12 +10,12 @@
     </div>
     {%endfor%}
 </div>
-<div class="grid place-items-center m-4">
-    <form action="" class="form-control max-w-s" method="post" enctype="multipart/form-data">
+<div class="grid place-items-center m-4 w-full">
+    <form action="" class="form-control" method="post" enctype="multipart/form-data">
         {{ image_form.hidden_tag() }}
             {% for field in image_form if field.widget.input_type != "hidden" %}
             <!-- {{field.label(class_="text-5xl my-2")}} -->
-            {{field(class_="block rounded w-full max-w-xs my-2", id="upload-btn")}}
+            {{field(class_="block rounded w-full min-w-xs my-2", id="upload-btn")}}
         {%endfor%}
         <button class="btn btn-primary max-w-sm my-2">Upload banner images</button>
     </form>
@@ -26,35 +26,34 @@
         </div>
     </div>
 
-    <form action="" method="post" class="min-w-lg form-control">
+    <form action="" method="post" class="form-control w-full items-center">
         {{ user_profile_form.hidden_tag() }}
         {% for field in user_profile_form if field.widget.input_type != "hidden" %}
         <div class="label">
             <span class="label-text text-3xl">{{field.label}}</span>
         </div>
-        {{field(class_="input input-bordererd w-full max-w-xs input-secondary")}}
+        {{field(class_="input input-bordererd w-1/3 min-w-fit input-secondary")}}
         {%endfor%}
-        <button class="btn btn-primary max-w-s my-2">Update</button>
+        <button class="btn btn-primary w-1/3 min-w-fit my-4">Update</button>
     </form>
 </div>
-<div class="grid place-items-center ">
-    <div class="overflow-x-auto m-4 w-1/2">
-        <table class="table w-full ">
+<div class="grid place-items-center">
+    <div class="overflow-x-auto m-4 w-1/2" style="height:60rem;overflow:auto;">
+        <table class="table w-full" id="villager-table">
             <thead>
                     <th>
                         <input type="checkbox" class="checkbox" disabled></label>
                     </th>
                 <th>Name</th>
                 <th>Image</th>
-                <th></th>
-                <th><input type="text" class="input input-bordered input-secondary" id="villager-filter"></th>
+                <th class="place-items-center"><input type="text" class="input input-bordered input-secondary" id="villager-filter"></th>
             </thead>
             <tbody>
                 {% for villager in villager_list %}
                 <tr>
                     <th>
                       <label>
-                        <input type="checkbox" class="checkbox bg-primary-content" />
+                        <input type="checkbox" class="checkbox bg-primary-content" value="{{villager.id}}"/>
                       </label>
                     </th>
                     <td>

@@ -15,9 +15,9 @@
 
 {% for user in users %}
 <div class="grid place-items-center m-4">
-    <div class="card lg:card-side shadow-x1 bg-base-200 w-2/3">
+    <div class="card lg:card-side shadow-x1 bg-base-200 w-2/3 ">
         <figure >
-            <img src="{{user.images[0].image_url}}" class="rounded-box my-4" width="405">
+            <img src="{% if user.images != [] %} {{user.images[0].image_url}} {% else %} https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png {% endif %}" class="rounded-box my-4 ml-4" width="405">
         </figure>
         <div class="card-body">
             <h2 class="card-title text-3xl">{{user.username}}</h2>
