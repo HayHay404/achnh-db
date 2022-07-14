@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, EmailField, SelectField, MultipleFileField, TextAreaField
+from wtforms import StringField, PasswordField, EmailField, SelectField, MultipleFileField, TextAreaField, SelectMultipleField, HiddenField
 from wtforms.validators import InputRequired, Email, Length
 
 
@@ -22,4 +22,5 @@ class UserProfileForm(FlaskForm):
 class ImageUploadForm(FlaskForm):
     image_file = MultipleFileField("Upload Banner Images", validators=[Length(max=5)])
     
-    
+class VillagerSelectForm(FlaskForm):
+    villager_list = HiddenField(SelectMultipleField("Select up to 10 villagers", validators=[Length(max=10)]))

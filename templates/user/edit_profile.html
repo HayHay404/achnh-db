@@ -37,50 +37,61 @@
         <button class="btn btn-primary w-1/3 min-w-fit my-4">Update</button>
     </form>
 </div>
-<div class="grid place-items-center">
-    <div class="overflow-x-auto m-4 w-1/2" style="height:60rem;overflow:auto;">
-        <table class="table w-full" id="villager-table">
-            <thead>
-                    <th>
-                        <input type="checkbox" class="checkbox" disabled></label>
-                    </th>
-                <th>Name</th>
-                <th>Image</th>
-                <th class="place-items-center"><input type="text" class="input input-bordered input-secondary" id="villager-filter"></th>
-            </thead>
-            <tbody>
-                {% for villager in villager_list %}
-                <tr>
-                    <th>
-                      <label>
-                        <input type="checkbox" class="checkbox bg-primary-content" value="{{villager.id}}"/>
-                      </label>
-                    </th>
-                    <td>
-                      <div class="flex items-center space-x-3">
-                        <div>
-                          <div class="font-bold text-1xl">{{villager.name}}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                        <div class="avatar">
-                            <div class="mask mask-circle w-24">
-                              <img src="{{villager.image_url}}" alt="{{villager.name}} Icon" />
+<div class="grid place-items-center m-4 w-full">
+    <h1 class="text-3xl">Pick up to 10 villagers</h1>
+    <form action="" method="post" class="form-control w-full items-center">
+        {{ villager_form.hidden_tag() }}
+        {% for field in villager_form if field.widget.input_type != "hidden" %}
+        <div class="label">
+            <span class="label-text text-3xl">{{field.label}}</span>
+        </div>
+        {{field()}}
+        {%endfor%}        
+        <div class="overflow-x-auto m-4 w-1/2" style="height:60rem;overflow:auto;">
+            <table class="table w-full" id="villager-table">
+                <thead>
+                        <th>
+                            <input type="checkbox" class="checkbox" disabled></label>
+                        </th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th class="place-items-center"><input type="text" class="input input-bordered input-secondary" id="villager-filter"></th>
+                </thead>
+                <tbody>
+                    {% for villager in villager_list %}
+                    <tr>
+                        <th>
+                        <label>
+                            <input type="checkbox" class="checkbox bg-primary-content" value="{{villager.id}}"/>
+                        </label>
+                        </th>
+                        <td>
+                        <div class="flex items-center space-x-3">
+                            <div>
+                            <div class="font-bold text-1xl">{{villager.name}}</div>
                             </div>
-                          </div>
-                    </td>
-                    <th>
-                      <button class="btn btn-ghost btn-xs">details</button>
-                    </th>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                        </div>
+                        </td>
+                        <td>
+                            <div class="avatar">
+                                <div class="mask mask-circle w-24">
+                                <img src="{{villager.image_url}}" alt="{{villager.name}} Icon" />
+                                </div>
+                            </div>
+                        </td>
+                        <th>
+                        <button class="btn btn-ghost btn-xs">details</button>
+                        </th>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    <button class="btn btn-primary w-1/3 min-w-fit my-4">Update</button>
+    </form>
 </div>
 
 <script src="/static/carousel_preview.js"></script>
 <script src="/static/profile_preview.js"></script>
-<script src="/static/villager_filter.js"></script>
+<script src="/static/villager_table.js"></script>
 {%endblock%}

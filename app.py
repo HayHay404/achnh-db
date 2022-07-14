@@ -3,7 +3,7 @@ from requests import request
 import requests
 from models import connect_db, db, User, Villager, Image, UserVillager
 from flask_mail import Mail, Message
-from forms import ImageUploadForm, SigninForm, SignupForm, UserProfileForm
+from forms import ImageUploadForm, SigninForm, SignupForm, UserProfileForm, VillagerSelectForm
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from  sqlalchemy.sql.expression import func
@@ -177,13 +177,19 @@ def edit_user_profile(username):
         return (redirect("/"), 401)
 
     image_form = ImageUploadForm()
+    # [print(villager.villagers.id) for villager in user.user_villagers]
+    villager_form = VillagerSelectForm(villager_list = [villager.villagers.id for villager in user.user_villagers])
+
+    villager_list = Villager.query.all()
+    full_villager_list = [(villager.id, villager.name) for villager in villager_list]
+
+    villager_form.villager_list.choices = full_villager_list
     if (user.profile_image[-1] != "g"):
         user_profile_form = UserProfileForm(obj = user, user_image = user.profile_image[-1])
     else:
         user_profile_form = UserProfileForm(obj = user)
         
-    villager_list = Villager.query.all()
-    user_profile_form.user_image.choices = [("", "")] + [(villager.id, villager.name) for villager in villager_list]
+    user_profile_form.user_image.choices = [("", "")] + full_villager_list
 
     if image_form.validate_on_submit():
         for file in image_form.image_file.data:
@@ -222,5 +228,36 @@ def edit_user_profile(username):
             user.profile_image = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
         db.session.commit()
+
+    if villager_form.validate_on_submit():
+        data = villager_form.villager_list.data.split(",")
+        print(data)
+        UserVillager.query.filter_by(user_id = user.id).delete()
+
+        if data != ['']:
+            for villager_id in data:
+                user_villager = UserVillager(user_id = user.id, villager_id = villager_id)
+                db.session.add(user_villager)
+        db.session.commit()
+        flash("Successfully added villagers to your Island", "success")
+        return redirect(url_for('user_profile', username = user.username))
     
-    return render_template("user/edit_profile.html", user = user, image_form = image_form, user_profile_form = user_profile_form, villager_list = villager_list)
+    return render_template("user/edit_profile.html", 
+        user = user, 
+        image_form = image_form, 
+        user_profile_form = user_profile_form, 
+        villager_list = villager_list,
+        villager_form = villager_form
+    )
+
+#
+#
+# Villager views
+#
+#
+
+@app.route("/v/<name>/")
+def villager_profile(name):
+    villager = Villager.query.filter_by(name = name).first_or_404()
+
+    return render_template("/villager/profile.html", villager = villager)
