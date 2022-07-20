@@ -3,13 +3,13 @@ from models import db, Villager, User, Image, UserVillager
 import requests
 import json
 
-# db.drop_all()
+db.drop_all()
 db.create_all()
 
 BASE_URL = 'http://acnhapi.com/v1/villagers'
 
 # TODO: Replace range to range(1, 391)
-for idx in range(1, 10):
+for idx in range(1, 391):
     resp = requests.get(f"{BASE_URL}/{idx}")
     data = json.loads(resp.text)
     name = data["name"]["name-USen"]
