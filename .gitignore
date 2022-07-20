@@ -3,3 +3,8 @@ __pycache__/
 node_modules/
 config.py
 .env
+.ebignore
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

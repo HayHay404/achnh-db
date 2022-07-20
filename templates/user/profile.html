@@ -33,12 +33,14 @@
 <div class="flex flex-wrap justify-center">
     {% for user_villager in user.user_villagers %}
     {% set villager = user_villager.villagers %}
-    <span class="card bg-base-200 m-2">
-        <figure><img src="{{villager.image_url}}" alt=""></figure>
-        <span class="card-body">
-            <div class="card-title">{{villager.name}}</div>
+    <a href="/v/{{villager.name}}/">
+        <span class="card bg-base-200 m-2">
+            <figure><img src="{{villager.image_url}}" alt=""></figure>
+            <span class="card-body">
+                <div class="card-title">{{villager.name}}</div>
+            </span>
         </span>
-    </span>
+    </a>
     {% endfor %}
 </div>
 

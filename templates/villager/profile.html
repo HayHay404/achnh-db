@@ -1,7 +1,41 @@
 {% extends 'base.html' %}
 
 {%block content %}
-<h1 class="text-5xl">{{villager.name}}</h1>
-<img src="{{villager.image_url}}" alt="">
+<div class="m-4">
+    <h1 class="text-5xl mt-4" id="{{villager.id}}">{{villager.name}}</h1>
+    <div class="flex w-full">
+        <img src="{{villager.image_url}}" class="rounded-full" alt="{{villager.name}}">
+        
+        <div class="divider divider-horizontal"></div>
+
+        <div class="">
+            <div id="saying" class="text-3xl">Saying: </div>
+            <div id="birthday" class="text-3xl">Birthday: </div>
+            <div id="personality" class="text-3xl">Personality: </div>
+            <div id="hobby" class="text-3xl">Hobby: </div>
+        </div>
+    </div>
+
+    <h1 class="text-5xl mt-4">Other islands with this villager:</h1>
+    {% for user_villager in users_villagers %}
+    {% set user = user_villager.users %}
+    <div class="grid place-items-center m-4">
+        <div class="card lg:card-side shadow-x1 bg-base-200 w-2/3 ">
+            <figure >
+                <img src="{% if user.images != [] %} {{user.images[0].image_url}} {% else %} https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled-1150x647.png {% endif %}" class="rounded-box my-4 ml-4" width="405">
+            </figure>
+            <div class="card-body">
+                <h2 class="card-title text-3xl">{{user.username}}</h2>
+                <p>{% if user.bio != None %} {{user.bio}} {% else %} {% endif %}</p>
+                <div class="card-actions justify-end">
+                    <a href="{{url_for('user_profile', username = user.username)}}"><button class="btn btn-primary">Visit</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script src="/static/villager_profile.js"></script>
 
 {%endblock%}

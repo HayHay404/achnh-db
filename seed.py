@@ -3,7 +3,7 @@ from models import db, Villager, User, Image, UserVillager
 import requests
 import json
 
-db.drop_all()
+# db.drop_all()
 db.create_all()
 
 BASE_URL = 'http://acnhapi.com/v1/villagers'

@@ -41,7 +41,7 @@ class User(db.Model):
         return cls(username = username, password = hashed_utf8, email = email)
     
     images = db.relationship("Image", backref = "users", cascade = "all, delete-orphan")
-    user_villagers = db.relationship("UserVillager", backref = "users", cascade = "all, delete-orphan")
+    user_villagers = db.relationship("UserVillager", backref = "users", cascade = "all, delete-orphan", lazy='dynamic')
 
 class Villager(db.Model):
     """Class to store villagers each island has."""

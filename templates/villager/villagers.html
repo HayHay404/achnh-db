@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}All villagers{% endblock %}
+
+{% block content %}
+<div class="flex flex-wrap justify-center">
+    {% for villager in villagers %}
+    <a href="/v/{{villager.name}}">
+        <span class="card bg-base-200 m-4">
+            <figure><img src="{{villager.image_url}}" width="200px" alt=""></figure>
+            <span class="card-body place-items-center">
+                <div class="card-title">{{villager.name}}</div>
+            </span>
+        </span>
+    </a>
+    {% endfor %}
+</div>
+{%endblock%}

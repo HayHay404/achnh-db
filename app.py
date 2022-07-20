@@ -145,6 +145,12 @@ def logout():
 #
 #
 
+@app.route("/u/")
+def all_users():
+    users = User.query.all()
+
+    return render_template("/user/users.html", users = users)
+
 @app.route("/account", methods=["GET", "POST"])
 def account():
     if not g.user:
@@ -230,17 +236,17 @@ def edit_user_profile(username):
         db.session.commit()
 
     if villager_form.validate_on_submit():
-        data = villager_form.villager_list.data.split(",")
-        print(data)
-        UserVillager.query.filter_by(user_id = user.id).delete()
+        if "," in villager_form.villager_list.data: 
+            data = villager_form.villager_list.data.split(",")
+            UserVillager.query.filter_by(user_id = user.id).delete()
 
-        if data != ['']:
-            for villager_id in data:
-                user_villager = UserVillager(user_id = user.id, villager_id = villager_id)
-                db.session.add(user_villager)
-        db.session.commit()
-        flash("Successfully added villagers to your Island", "success")
-        return redirect(url_for('user_profile', username = user.username))
+            if data != ['']:
+                for villager_id in data:
+                    user_villager = UserVillager(user_id = user.id, villager_id = villager_id)
+                    db.session.add(user_villager)
+            db.session.commit()
+            flash("Successfully added villagers to your Island", "success")
+            return redirect(url_for('user_profile', username = user.username))
     
     return render_template("user/edit_profile.html", 
         user = user, 
@@ -256,8 +262,19 @@ def edit_user_profile(username):
 #
 #
 
+@app.route("/v/")
+def all_villagers():
+    villagers = Villager.query.all()
+
+    return render_template("/villager/villagers.html", villagers = villagers)
+
 @app.route("/v/<name>/")
 def villager_profile(name):
     villager = Villager.query.filter_by(name = name).first_or_404()
 
-    return render_template("/villager/profile.html", villager = villager)
+    users_villagers = UserVillager.query.filter(UserVillager.villager_id == villager.id).order_by(func.random()).limit(4).all()
+
+    return render_template("/villager/profile.html", villager = villager, users_villagers = users_villagers)
+
+if __name__ == "__main__":
+    app.run()
