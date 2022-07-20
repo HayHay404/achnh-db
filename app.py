@@ -21,7 +21,7 @@ load_dotenv(find_dotenv())
 #
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("database_url", default="postgresql:///acnhdb")
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", default="postgresql:///acnhdb")
 #app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///acnhdb"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("secret_key")
