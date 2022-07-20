@@ -7,7 +7,6 @@ from forms import ImageUploadForm, SigninForm, SignupForm, UserProfileForm, Vill
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from  sqlalchemy.sql.expression import func
-from config import config
 from imagekitio import ImageKit
 import os
 from dotenv import load_dotenv, find_dotenv
