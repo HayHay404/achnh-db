@@ -22,7 +22,7 @@ load_dotenv(find_dotenv())
 # Fix Heroku connection to postgresql database
 psql_uri = os.environ.get("DATABASE_URL", default="postgresql:///acnhdb")
 if psql_uri and psql_uri.startswith("postgres://"):
-    uri = psql_uri.replace("postgres://", "postgresql://", 1)
+    psql_uri = psql_uri.replace("postgres://", "postgresql://", 1)
 
 
 app = Flask(__name__)
