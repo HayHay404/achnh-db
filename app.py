@@ -115,7 +115,7 @@ def signup():
         session["user_id"] = form.username.data
         flash("Successfully signed up!", "success")
 
-        return redirect("/")
+        return redirect(url_for("edit_user_profile", username = new_user.username))
         
     return render_template("auth/signup.html", form = form)
 
@@ -177,6 +177,8 @@ def user_profile(username):
         user = g.user
     else:
         user = User.query.filter_by(username = username).first_or_404()
+
+    print(user.user_villagers.first())
 
     return render_template("user/profile.html", user = user)
 
