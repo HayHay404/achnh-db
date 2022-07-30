@@ -4,7 +4,7 @@ searchBar?.addEventListener("keydown", (event) => {
         event.preventDefault();
         let searchFormData = new FormData(document.getElementById("search-form"));
         const accountQuery = searchFormData.get("query");
-        console.log(accountQuery);
+        // console.log(accountQuery)
         window.location.replace(`/u/${accountQuery}/`);
     }
 });

@@ -20,7 +20,7 @@ class UserProfileForm(FlaskForm):
     dream_code = StringField("Dream Code", validators=[Length(max=12)])
 
 class ImageUploadForm(FlaskForm):
-    image_file = MultipleFileField("Upload Banner Images", validators=[Length(max=5)])
+    image_file = HiddenField(MultipleFileField("Upload Banner Images", validators=[Length(max=5)]))
     
 class VillagerSelectForm(FlaskForm):
     villager_list = HiddenField(SelectMultipleField("Select up to 10 villagers", validators=[Length(max=10)]))

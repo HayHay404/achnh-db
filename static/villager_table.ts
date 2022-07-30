@@ -49,10 +49,10 @@ function select(event : InputEvent) {
     }
 
     blurCheckbox()
-    console.log(villagerList.value)
+    // console.log(villagerList.value)
     villagerList.value = values.toString()
 
-    console.log(villagerList.value)
+    // console.log(villagerList.value)
 }
 
 function blurCheckbox() {

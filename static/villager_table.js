@@ -42,9 +42,9 @@ function select(event) {
         values = newVals;
     }
     blurCheckbox();
-    console.log(villagerList.value);
+    // console.log(villagerList.value)
     villagerList.value = values.toString();
-    console.log(villagerList.value);
+    // console.log(villagerList.value)
 }
 function blurCheckbox() {
     if (values.length === 10) {

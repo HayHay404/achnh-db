@@ -178,7 +178,7 @@ def user_profile(username):
     else:
         user = User.query.filter_by(username = username).first_or_404()
 
-    print(user.user_villagers.first())
+    #print(user.user_villagers.first())
 
     return render_template("user/profile.html", user = user)
 

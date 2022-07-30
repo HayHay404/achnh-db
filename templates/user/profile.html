@@ -15,18 +15,22 @@
             <img src="{{user.profile_image}}" alt="{{user.username}}" >
         </div>
     </div>
-    <h1 class="text-7xl my-2">{{user.username}}</h1>
+    <h1 class="text-7xl my-2">{{user.username}} {% if session['user_id'] == user.username %} <a href="/u/{{user.username}}/edit">✎</a>{%endif%}</h1>
     <p class="max-w-lg text-center">{% if user.bio != None%} {{user.bio}} {%endif%}</p>
 
     <div class="stats lg:stats-vertical shadow m-2 bg-primary text-primary-content">
+        {% if user.friend_code != None %}
         <div class="stat">
             <div class="stat-title">Friend Code</div>
             <div class="stat-value">FC-{{user.friend_code}}</div>
         </div>
+        {% endif %}
+        {% if user.dream_code != None %}
         <div class="stat">
             <div class="stat-title">Dream Code</div>
             <div class="stat-value">DA-{{user.dream_code}}</div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% if user.user_villagers.first() != None %}
@@ -45,13 +49,8 @@
     {% endfor %}
 </div>
 {% else %}
-<div class="min-h-[10vh]"></div>
+<div class="min-h-[40vh]"></div>
 {% endif %}
-
-{% if session['user_id'] == user.username %}
-<div class="card-actions justify-end m-4">
-    <a href="{{url_for('edit_user_profile', username = user.username)}}"><button class="btn btn-primary">Edit</button></a>
-{%endif%}
 </div>
 
 {%endblock%}
